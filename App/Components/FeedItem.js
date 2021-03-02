@@ -46,11 +46,16 @@ export default function FeedItem({ content, onProfilePressed }) {
   // You should only be writing 2 lines for this step. To check if it's working, take a look
   // at your database in your Firebase console!
   const saveBookmark = async () => {
-    setSavingBookmark(true);
-    const user = firebase.auth().currentUser;
-      // Add your code here
+    if (!savingBookmark) {
+      setSavingBookmark(true);
+      const user = firebase.auth().currentUser;
+      const userBookmarksCollection = firestore.collection('users').doc(user.uid).collection('bookmarks')
+      userBookmarksCollection.doc(content.id).set({
+        key: content.id, 
+      })
 
-    setSavingBookmark(false);
+      setSavingBookmark(false);
+    }
   }
 
   // STEP 2: Deleting a bookmark from the database
@@ -61,12 +66,16 @@ export default function FeedItem({ content, onProfilePressed }) {
   // You should only be writing 2 lines for this step. To check if it's working, take a look
   // at your database in your Firebase console!
   const deleteBookmark = async () => {
-    setSavingBookmark(true);
+    if (!savingBookmark) {
+      setSavingBookmark(true);
 
-    const user = firebase.auth().currentUser;
-    // Add you code here
+      const user = firebase.auth().currentUser;
+      const userBookmarksCollection = firestore.collection('users').doc(user.uid).collection('bookmarks')
+      userBookmarksCollection.doc(content.id).delete()
+      // Add you code here
 
-    setSavingBookmark(false);
+      setSavingBookmark(false);
+    }
   }
 
   const bookmarkPressed = async () => {
